@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block headline %}{{party_names[party]}}{% endblock %}
+
+{% block content%}
+<div class="column">
+    <form action="" method="get" accept-charset="utf-8">
+        <label for="query">Suchbegriff</label>
+        <input id="query" type="text" name="query" value="{{query}}" placeholder="">
+        <input type="submit" value="Suchen">
+        <br>
+        <br>
+    </form>
+    {% if image_url %}
+    <div class="graph">
+        <img src="{{image_url}}" alt="">
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

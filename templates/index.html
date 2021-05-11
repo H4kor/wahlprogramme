@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<div class="column center">
+    <h2>Parteien</h2>
+    <ul>
+        {% for party in parties %}
+            <li>
+                <a href="/party/{{party}}">{{party_names[party]}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="column center">
+    <h2>Jahre</h2>
+    <ul>
+        {% for year in years %}
+            <li>
+                <a href="/year/{{year}}">{{year}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock%}

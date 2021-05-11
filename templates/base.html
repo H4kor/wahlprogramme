@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='milligram.min.css') }}">
+    <style type="text/css">
+        .header {
+            margin: 0 auto;
+            margin-top: 2em;
+        }
+
+        .headline {
+            margin: 0 auto;
+            margin-bottom: 1em;
+        }
+
+        .notes {
+            margin-bottom: 1em;            
+        }
+
+        .graph {
+            margin: 0 auto;
+            text-align:center;
+        }
+
+        .center {
+            margin: 0 auto;
+            text-align:center;
+        }
+
+        li {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h1 class="header"><a href="/">Wahlprogramme</a></h1>
+        </div>
+        <div class="row">
+            <h2 class="headline">{% block headline %}{% endblock %}</h2>
+        </div>
+        <div class="row">
+            <div class="column">
+                <ul>
+                    <li>
+                        CDU und AfD haben ihr Wahlprogramm 2021 noch nicht veröffentlicht.
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class="row">
+            <div class="column center">
+                <h3>Quellen</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column center">
+                <h4>2017</h4>
+                <ul>
+                    <li><a href="https://www.cdu.de/system/tdf/media/dokumente/170703regierungsprogramm2017.pdf?file=1">CDU</a></li>
+                    <li><a href="https://www.spd.de/fileadmin/Dokumente/Bundesparteitag_2017/Es_ist_Zeit_fuer_mehr_Gerechtigkeit-Unser_Regierungsprogramm.pdf">SPD</a></li>
+                    <li><a href="https://www.gruene.de/fileadmin/user_upload/Dokumente/BUENDNIS_90_DIE_GRUENEN_Bundestagswahlprogramm_2017.pdf">Die Grünen</a></li>
+                    <li><a href="https://www.die-linke.de/fileadmin/download/wahlen2017/wahlprogramm2017/die_linke_wahlprogramm_2017.pdf">Die Linke</a></li>
+                    <li><a href="https://www.bundestagswahl-2021.de/wp-content/uploads/2021/04/FW-Wahlprogramm-2017-Die-anstaendige-Alternative.pdf">Freie Wähler</a></li>
+                    <li><a href="https://www.fdp.de/sites/default/files/uploads/2017/08/07/20170807-wahlprogramm-wp-2017-v16.pdf">FDP</a></li>
+                    <li><a href="https://www.afd.de/wp-content/uploads/sites/111/2017/06/2017-06-01_AfD-Bundestagswahlprogramm_Onlinefassung.pdf">AfD</a></li>
+                </ul>
+            </div>
+            <div class="column center">
+                <h4>2021</h4>
+                <ul>
+                    <li>CDU noch nicht veröffentlicht.</li>
+                    <li><a href="https://www.spd.de/fileadmin/Dokumente/Beschluesse/Programm/SPD-Zukunftsprogramm.pdf">SPD</a></li>
+                    <li><a href="https://cms.gruene.de/uploads/documents/2021_Wahlprogrammentwurf.pdf">Die Grünen</a></li>
+                    <li><a href="https://www.die-linke.de/fileadmin/download/wahlen2021/BTWP21_Entwurf_Vorsitzende.pdf">Die Linke</a></li>
+                    <li><a href="https://www.freiewaehler.eu/template/elemente/203/FREIE%20W%C3%84HLER_Wahlprogramm-BTW21.pdf">Freie Wähler</a></li>
+                    <li><a href="https://www.fdp.de/content/entwurf-fdp-bundestagswahlprogramm-2021">FDP</a></li>
+                    <li>AfD noch nicht veröffentlicht.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    
+</body>
+</html>
