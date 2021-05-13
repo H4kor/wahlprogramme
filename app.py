@@ -13,6 +13,7 @@ sns.set()
 
 # load database
 db = defaultdict(dict)
+stats = defaultdict(dict)
 years = ["2017", "2021"]
 for year in years:
     for program in os.listdir(year):
@@ -23,6 +24,7 @@ for year in years:
                 with open(os.path.join(year, program), "r") as tfile:
                     text = tfile.read()
                 db[party][year] = text.lower()
+                stats[party][year] = {"size": len(text.split())}
 
 
 party_names = {
@@ -49,6 +51,15 @@ party_colors = {
 app = Flask(__name__)
 
 
+def parse_queries(request):
+    query = request.args.get("query", "")
+    relative = request.args.get("relative", "false")
+    relative = relative.strip().lower() == "true"
+    terms = [x.strip().lower() for x in query.split(",")]
+
+    return query, relative, terms
+
+
 @app.route("/")
 def index_view():
     return render_template(
@@ -61,14 +72,15 @@ def party_view(party):
     if party not in party_names:
         return "Not Found", 404
 
-    query = request.args.get("query", "")
+    query, relative, terms = parse_queries(request)
     image_url = None
     if query:
-        image_url = f"/party/{party}.png?query=" + query
+        image_url = f"/party/{party}.png?query={query}&relative={relative}"
     return render_template(
         "party.html",
         image_url=image_url,
         query=query,
+        relative=relative,
         party_names=party_names,
         party=party,
     )
@@ -79,27 +91,33 @@ def year_view(year):
     if year not in years:
         return "Not Found", 404
 
-    query = request.args.get("query", "")
+    query, relative, terms = parse_queries(request)
     image_url = None
     if query:
-        image_url = f"/year/{year}.png?query=" + query
-    return render_template("year.html", image_url=image_url, query=query, year=year)
+        image_url = f"/year/{year}.png?query={query}&relative={relative}"
+    return render_template(
+        "year.html", image_url=image_url, query=query, year=year, relative=relative
+    )
 
 
 @app.route("/year/<string:year>.png")
 def year_png(year):
     if year not in years:
         return "Not Found", 404
-    query = request.args.get("query", "")
+    query, relative, terms = parse_queries(request)
+
     data = {"x": [], "y": [], "hue": [], "color": []}
     if query:
-        terms = [x.strip().lower() for x in query.split(",")]
         for term in terms:
             for party in db:
                 data["color"].append(party_colors[party])
                 if year in db[party]:
+                    count = len(re.findall(f"(?={term})", db[party][year]))
+                    if relative:
+                        count /= stats[party][year]["size"]
+
                     data["x"].append(term)
-                    data["y"].append(len(re.findall(f"(?={term})", db[party][year])))
+                    data["y"].append(count)
                     data["hue"].append(party_names[party])
 
     fig = Figure(figsize=(12, 6))
@@ -126,15 +144,19 @@ def year_png(year):
 def party_png(party):
     if party not in party_names:
         return "Not Found", 404
-    query = request.args.get("query", "")
+    query, relative, terms = parse_queries(request)
+
     data = {"x": [], "y": [], "hue": [], "color": []}
     if query:
-        terms = [x.strip().lower() for x in query.split(",")]
         for term in terms:
             data["color"].append(party_colors[party])
             for year in db[party]:
+                count = len(re.findall(f"(?={term})", db[party][year]))
+                if relative:
+                    count /= stats[party][year]["size"]
+
                 data["hue"].append(term)
-                data["y"].append(len(re.findall(f"(?={term})", db[party][year])))
+                data["y"].append(count)
                 data["x"].append(year)
 
     fig = Figure(figsize=(12, 6))
