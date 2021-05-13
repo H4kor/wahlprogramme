@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 
 sns.set()
 
+DOMAIN = os.environ.get("WAHL_DOMAIN", "https://wahlprogramme.rerere.org")
+
 # load database
 db = defaultdict(dict)
 stats = defaultdict(dict)
@@ -63,7 +65,11 @@ def parse_queries(request):
 @app.route("/")
 def index_view():
     return render_template(
-        "index.html", parties=list(db.keys()), years=years, party_names=party_names
+        "index.html",
+        parties=list(db.keys()),
+        years=years,
+        party_names=party_names,
+        DOMAIN=DOMAIN,
     )
 
 
@@ -83,6 +89,7 @@ def party_view(party):
         relative=relative,
         party_names=party_names,
         party=party,
+        DOMAIN=DOMAIN,
     )
 
 
@@ -96,7 +103,12 @@ def year_view(year):
     if query:
         image_url = f"/year/{year}.png?query={query}&relative={relative}"
     return render_template(
-        "year.html", image_url=image_url, query=query, year=year, relative=relative
+        "year.html",
+        image_url=image_url,
+        query=query,
+        year=year,
+        relative=relative,
+        DOMAIN=DOMAIN,
     )
 
 

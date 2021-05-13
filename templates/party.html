@@ -4,20 +4,7 @@
 
 {% block content%}
 <div class="column">
-    <form action="" method="get" accept-charset="utf-8">
-        <fieldset>
-            <label for="query">Suchbegriff</label>
-            <input id="query" type="text" name="query" value="{{query}}" placeholder="">
-            <label for="relative">Relativ</label>
-
-            <div class="float-right">
-              <input type="checkbox" id="relative" name="relative" value="true"
-                {%if relative%}checked{%endif%}>
-              <label class="label-inline" for="relative">Relativ</label>
-            </div>
-            <input class="button-primary" type="submit" value="Suchen">
-        </fieldset>
-    </form>
+    {% include "search_field.html" %}
     <br>
     <br>
     {% if image_url %}

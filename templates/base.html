@@ -2,8 +2,33 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge; chrome=1">
+
+    <title>Wahlprogramme - {{title}}</title>
+
+    <meta name="description" content="Visualisierung von Wahlprogammen in der deutschen Bundestagswahl"> 
+    <meta name="abstract"    content="Visualisierung von Wahlprogammen in der deutschen Bundestagswahl"> 
+    <meta name="rating"      content="General">
+
+    {% if image_url %}
+        <meta property="og:image" content="{{DOMAIN}}{{image_url}}">
+    {% endif %}
+    <meta property="og:site_name" content="Wahlprogramme">
+    <meta property="og:title" content="Wahlprogramme">
+    <meta property="og:description" content="Visualisierung von Wahlprogammen in der deutschen Bundestagswahl">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:email" content="niko@rerere.org">
+ 
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@h4kor">
+    <meta name="twitter:title" content="Wahlprogramme - {{title}}">
+    <meta name="twitter:description" content="Visualisierung von Wahlprogammen in der deutschen Bundestagswahl">
+    {% if image_url %}
+        <meta name="twitter:image" content="{{DOMAIN}}{{image_url}}">
+    {% endif %}
+    
+
     <link rel="stylesheet" href="{{ url_for('static', filename='milligram.min.css') }}">
     <style type="text/css">
         .header {
