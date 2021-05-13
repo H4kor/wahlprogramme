@@ -5,9 +5,7 @@ from collections import defaultdict
 from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
-import matplotlib.pyplot as plt
 
 sns.set()
 
@@ -174,14 +172,7 @@ def party_png(party):
     fig = Figure(figsize=(12, 6))
     fig.suptitle(f"Wahlprogramme {party_names[party]}")
     axis = fig.add_subplot(1, 1, 1)
-    g = sns.barplot(
-        data=data,
-        x="x",
-        y="y",
-        hue="hue",
-        # palette=sns.color_palette(f"light:{party_colors[party]}", n_colors=len(terms)),
-        ax=axis,
-    )
+    g = sns.barplot(data=data, x="x", y="y", hue="hue", ax=axis)
     g.legend(loc="center left", bbox_to_anchor=(1, 0.5))
     fig.tight_layout()
     output = io.BytesIO()
