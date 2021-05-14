@@ -1,6 +1,5 @@
 import io
 import os
-import re
 from collections import defaultdict
 from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -69,10 +68,8 @@ def party_view(party):
         return "Not Found", 404
 
     search = parse_search_queries(request.args)
+    image_url = f"/party/{party}.png?" + request.query_string.decode("utf-8")
 
-    image_url = None
-    if query:
-        image_url = f"/party/{party}.png?" + request.query_string.decode("utf-8")
     return render_template(
         "party.html",
         image_url=image_url,
@@ -90,10 +87,8 @@ def year_view(year):
         return "Not Found", 404
 
     search = parse_search_queries(request.args)
+    image_url = f"/year/{year}.png?" + request.query_string.decode("utf-8")
 
-    image_url = None
-    if query:
-        image_url = f"/year/{year}.png?" + request.query_string.decode("utf-8")
     return render_template(
         "year.html",
         image_url=image_url,

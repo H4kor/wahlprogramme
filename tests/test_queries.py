@@ -1,3 +1,4 @@
+# flake8: noqa: E712
 from wahlprogramme.query import (
     parse_search_queries,
     count_term,

@@ -13,5 +13,6 @@ def main():
                 with open(os.path.join(folder, oname), "w") as out:
                     out.write(raw["content"])
 
+
 if __name__ == "__main__":
     main()
