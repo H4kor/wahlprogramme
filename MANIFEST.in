@@ -1,0 +1,3 @@
+graft wahlprogramme/static
+graft wahlprogramme/templates
+global-exclude *.pyc

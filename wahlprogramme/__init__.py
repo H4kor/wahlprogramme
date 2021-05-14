@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import seaborn as sns
+from .query import parse_search_queries, count_query
 
 sns.set()
 
@@ -51,15 +52,6 @@ party_colors = {
 app = Flask(__name__)
 
 
-def parse_queries(request):
-    query = request.args.get("query", "")
-    relative = request.args.get("relative", "false")
-    relative = relative.strip().lower() == "true"
-    terms = [x.strip().lower() for x in query.split(",")]
-
-    return query, relative, terms
-
-
 @app.route("/")
 def index_view():
     return render_template(
@@ -76,17 +68,18 @@ def party_view(party):
     if party not in party_names:
         return "Not Found", 404
 
-    query, relative, terms = parse_queries(request)
+    search = parse_search_queries(request.args)
+
     image_url = None
     if query:
-        image_url = f"/party/{party}.png?query={query}&relative={relative}"
+        image_url = f"/party/{party}.png?query={request.args.get('query', '')}&relative={request.args.get('relative', '')}"
     return render_template(
         "party.html",
         image_url=image_url,
-        query=query,
-        relative=relative,
         party_names=party_names,
         party=party,
+        query=search.raw_query,
+        relative=search.relative,
         DOMAIN=DOMAIN,
     )
 
@@ -96,16 +89,17 @@ def year_view(year):
     if year not in years:
         return "Not Found", 404
 
-    query, relative, terms = parse_queries(request)
+    search = parse_search_queries(request.args)
+
     image_url = None
     if query:
-        image_url = f"/year/{year}.png?query={query}&relative={relative}"
+        image_url = f"/year/{year}.png?query={request.args.get('query', '')}&relative={request.args.get('relative', '')}"
     return render_template(
         "year.html",
         image_url=image_url,
-        query=query,
         year=year,
-        relative=relative,
+        query=search.raw_query,
+        relative=search.relative,
         DOMAIN=DOMAIN,
     )
 
@@ -114,21 +108,20 @@ def year_view(year):
 def year_png(year):
     if year not in years:
         return "Not Found", 404
-    query, relative, terms = parse_queries(request)
+    search = parse_search_queries(request.args)
 
     data = {"x": [], "y": [], "hue": [], "color": []}
-    if query:
-        for term in terms:
-            for party in db:
-                data["color"].append(party_colors[party])
-                if year in db[party]:
-                    count = len(re.findall(f"(?={term})", db[party][year]))
-                    if relative:
-                        count /= stats[party][year]["size"]
+    for query in search.queries:
+        for party in db:
+            data["color"].append(party_colors[party])
+            if year in db[party]:
+                count = count_query(query, db[party][year])
+                if search.relative:
+                    count /= stats[party][year]["size"]
 
-                    data["x"].append(term)
-                    data["y"].append(count)
-                    data["hue"].append(party_names[party])
+                data["x"].append(query.raw_query)
+                data["y"].append(count)
+                data["hue"].append(party_names[party])
 
     fig = Figure(figsize=(12, 6))
     fig.suptitle(f"Wahlprogramme {year}")
@@ -154,20 +147,19 @@ def year_png(year):
 def party_png(party):
     if party not in party_names:
         return "Not Found", 404
-    query, relative, terms = parse_queries(request)
+    search = parse_search_queries(request.args)
 
     data = {"x": [], "y": [], "hue": [], "color": []}
-    if query:
-        for term in terms:
-            data["color"].append(party_colors[party])
-            for year in db[party]:
-                count = len(re.findall(f"(?={term})", db[party][year]))
-                if relative:
-                    count /= stats[party][year]["size"]
+    for query in search.queries:
+        data["color"].append(party_colors[party])
+        for year in db[party]:
+            count = count_query(query, db[party][year])
+            if search.relative:
+                count /= stats[party][year]["size"]
 
-                data["hue"].append(term)
-                data["y"].append(count)
-                data["x"].append(year)
+            data["hue"].append(query.raw_query)
+            data["y"].append(count)
+            data["x"].append(year)
 
     fig = Figure(figsize=(12, 6))
     fig.suptitle(f"Wahlprogramme {party_names[party]}")
