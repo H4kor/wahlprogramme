@@ -72,7 +72,7 @@ def party_view(party):
 
     image_url = None
     if query:
-        image_url = f"/party/{party}.png?query={request.args.get('query', '')}&relative={request.args.get('relative', '')}"
+        image_url = f"/party/{party}.png?" + request.query_string.decode("utf-8")
     return render_template(
         "party.html",
         image_url=image_url,
@@ -93,7 +93,7 @@ def year_view(year):
 
     image_url = None
     if query:
-        image_url = f"/year/{year}.png?query={request.args.get('query', '')}&relative={request.args.get('relative', '')}"
+        image_url = f"/year/{year}.png?" + request.query_string.decode("utf-8")
     return render_template(
         "year.html",
         image_url=image_url,

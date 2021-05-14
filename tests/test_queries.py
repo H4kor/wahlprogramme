@@ -64,6 +64,16 @@ def test_multi_term():
     assert len(parse_search_queries({"query": "'foo'+'bar'+baz"}).queries[0].terms) == 3
 
 
+def test_multi_term_terms():
+    terms = [
+        t.term
+        for t in parse_search_queries({"query": "'foo'+'bar'+baz"}).queries[0].terms
+    ]
+    assert "foo" in terms
+    assert "bar" in terms
+    assert "baz" in terms
+
+
 def test_count_term():
     text = """
     Foo foobar,
