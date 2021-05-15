@@ -6,25 +6,14 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import seaborn as sns
 from .query import parse_search_queries, count_query
+from .database import load_db
 
 sns.set()
 
 DOMAIN = os.environ.get("WAHL_DOMAIN", "https://wahlprogramme.rerere.org")
 
 # load database
-db = defaultdict(dict)
-stats = defaultdict(dict)
-years = ["2017", "2021"]
-for year in years:
-    for program in os.listdir(year):
-        if program.endswith(".txt"):
-            # ignore kurz for the moment
-            if "_kurz" not in program:
-                party = program.split(".")[0]
-                with open(os.path.join(year, program), "r") as tfile:
-                    text = tfile.read()
-                db[party][year] = text.lower()
-                stats[party][year] = {"size": len(text.split())}
+db = load_db("data/")
 
 
 party_names = {
@@ -55,8 +44,8 @@ app = Flask(__name__)
 def index_view():
     return render_template(
         "index.html",
-        parties=list(db.keys()),
-        years=years,
+        parties=db.parties,
+        years=db.years,
         party_names=party_names,
         DOMAIN=DOMAIN,
     )
@@ -83,7 +72,7 @@ def party_view(party):
 
 @app.route("/year/<string:year>")
 def year_view(year):
-    if year not in years:
+    if year not in db.years:
         return "Not Found", 404
 
     search = parse_search_queries(request.args)
@@ -101,22 +90,20 @@ def year_view(year):
 
 @app.route("/year/<string:year>.png")
 def year_png(year):
-    if year not in years:
+    if year not in db.years:
         return "Not Found", 404
     search = parse_search_queries(request.args)
 
-    data = {"x": [], "y": [], "hue": [], "color": []}
+    data = {"x": [], "y": [], "hue": []}
     for query in search.queries:
-        for party in db:
-            data["color"].append(party_colors[party])
-            if year in db[party]:
-                count = count_query(query, db[party][year])
-                if search.relative:
-                    count /= stats[party][year]["size"]
+        for party in db.get(year).parties:
+            count = count_query(query, db.get(year).get(party).text)
+            if search.relative:
+                count /= db.get(year).get(party).stats.size
 
-                data["x"].append(query.raw_query)
-                data["y"].append(count)
-                data["hue"].append(party_names[party])
+            data["x"].append(query.raw_query)
+            data["y"].append(count)
+            data["hue"].append(party_names[party])
 
     fig = Figure(figsize=(12, 6))
     fig.suptitle(f"Wahlprogramme {year}")
@@ -126,8 +113,8 @@ def year_png(year):
         x="x",
         y="y",
         hue="hue",
-        hue_order=[party_names[p] for p in db],
-        palette=[party_colors[p] for p in db],
+        hue_order=[party_names[p] for p in db.parties],
+        palette=[party_colors[p] for p in db.parties],
         ax=axis,
     )
     # place the legend outside the figure/plot
@@ -144,17 +131,17 @@ def party_png(party):
         return "Not Found", 404
     search = parse_search_queries(request.args)
 
-    data = {"x": [], "y": [], "hue": [], "color": []}
+    data = {"x": [], "y": [], "hue": []}
     for query in search.queries:
-        data["color"].append(party_colors[party])
-        for year in db[party]:
-            count = count_query(query, db[party][year])
-            if search.relative:
-                count /= stats[party][year]["size"]
+        for year in db.years:
+            if db.get(year).get(party):
+                count = count_query(query, db.get(year).get(party).text)
+                if search.relative:
+                    count /= db.get(year).get(party).stats.size
 
-            data["hue"].append(query.raw_query)
-            data["y"].append(count)
-            data["x"].append(year)
+                data["hue"].append(query.raw_query)
+                data["y"].append(count)
+                data["x"].append(year)
 
     fig = Figure(figsize=(12, 6))
     fig.suptitle(f"Wahlprogramme {party_names[party]}")
