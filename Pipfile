@@ -7,6 +7,7 @@ name = "pypi"
 Flask = ">=2.0.0"
 seaborn = ">=0.11.1"
 wahlprogramme = {editable = true, path = "."}
+tika = "*"
 
 [dev-packages]
 pytest = "6.2.4"

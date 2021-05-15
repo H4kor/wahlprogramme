@@ -24,6 +24,7 @@ party_names = {
     "afd": "AfD",
     "grüne": "Die Grünen",
     "linke": "Die Linke",
+    "piraten": "Piraten",
 }
 
 party_colors = {
@@ -34,6 +35,7 @@ party_colors = {
     "afd": "#009ee0",
     "grüne": "#46962b",
     "linke": "#d00060",
+    "piraten": "#FF820A",
 }
 
 
@@ -113,8 +115,8 @@ def year_png(year):
         x="x",
         y="y",
         hue="hue",
-        hue_order=[party_names[p] for p in db.parties],
-        palette=[party_colors[p] for p in db.parties],
+        hue_order=[party_names[p] for p in db.get(year).parties],
+        palette=[party_colors[p] for p in db.get(year).parties],
         ax=axis,
     )
     # place the legend outside the figure/plot

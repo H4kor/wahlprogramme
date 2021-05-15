@@ -5,7 +5,8 @@ from tika import parser
 
 
 def main():
-    for folder in ["2017", "2021"]:
+    for year in os.listdir("data/"):
+        folder = os.path.join("data", year)
         for fname in os.listdir(folder):
             if fname.endswith(".pdf"):
                 oname = ".".join(fname.split(".")[:-1] + ["txt"])

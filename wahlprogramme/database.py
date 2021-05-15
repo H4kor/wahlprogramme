@@ -35,7 +35,7 @@ class Database:
 
     @property
     def years(self):
-        return list(self._years.keys())
+        return sorted(list(self._years.keys()))
 
     @property
     def parties(self):
