@@ -65,6 +65,15 @@ def test_multi_term():
     assert len(parse_search_queries({"query": "'foo'+'bar'+baz"}).queries[0].terms) == 3
 
 
+def test_terms_lower():
+    assert parse_search_queries({"query": "Foo"}).queries[0].terms[0].term == "foo"
+    assert parse_search_queries({"query": "'Foo'"}).queries[0].terms[0].term == "foo"
+    assert parse_search_queries({"query": '"Foo"'}).queries[0].terms[0].term == "foo"
+    assert (
+        parse_search_queries({"query": '"FooBar"'}).queries[0].terms[0].term == "foobar"
+    )
+
+
 def test_multi_term_terms():
     terms = [
         t.term

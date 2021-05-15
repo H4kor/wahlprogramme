@@ -18,7 +18,7 @@ def str_to_term(s):
     if exact:
         term = term[1:-1]
 
-    return Term(exact=exact, term=term)
+    return Term(exact=exact, term=term.lower())
 
 
 def str_to_query(s):

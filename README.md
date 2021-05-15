@@ -17,15 +17,20 @@
 Umgebung einrichten:
 
 ```
-python3 -m venv venv
-. venv/bin/activate
-pip install -r requirements.txt
+pipenv install
+pipenv shell
 ```
 
 Debug Server starten:
 
 ```
-FLASK_ENV=development flask run --reload
+FLASK_APP=wahlprogramme FLASK_ENV=development flask run --reload
+```
+
+Tests:
+
+```
+pytest
 ```
 
 ## Quellen
