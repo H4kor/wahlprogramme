@@ -1,10 +1,53 @@
 import re
 from collections import namedtuple
 
-
-Term = namedtuple("Term", ["exact", "term"])
-Query = namedtuple("Query", ["terms", "raw_query"])
 Search = namedtuple("Search", ["relative", "queries", "raw_query"])
+
+
+class Term:
+    def __init__(self, exact, term):
+        self._exact = exact
+        self._term = term
+
+    @property
+    def exact(self):
+        return self._exact
+
+    @property
+    def term(self):
+        return self._term
+
+    def _count_exact_term(self, text):
+        words = re.findall(r"[\w']+|[.,!?;]", text)
+        return sum([1 for word in words if word == self._term])
+
+    def count_in_text(self, text):
+        if self._exact:
+            return self._count_exact_term(text.lower())
+        else:
+            return len(re.findall(f"(?={self._term})", text.lower()))
+
+    def found_in_text(self, text):
+        # TODO: can be optimized
+        return self.count_in_text(text) > 0
+
+
+class Query:
+    def __init__(self, terms, raw_query):
+        self._terms = terms
+        self._raw_query = raw_query
+
+    @property
+    def terms(self):
+        return self._terms
+
+    @property
+    def raw_query(self):
+        return self._raw_query
+
+    def found_in_text(self, text):
+        # TODO: can be optimized
+        return any(t.found_in_text(text) for t in self._terms)
 
 
 def str_to_term(s):
@@ -38,20 +81,8 @@ def parse_search_queries(args):
     return Search(relative=relative, queries=queries, raw_query=args.get("query", ""))
 
 
-def _count_exact_term(term, text):
-    words = re.findall(r"[\w']+|[.,!?;]", text)
-    return sum([1 for word in words if word == term])
-
-
-def count_term(term, text):
-    if term.exact:
-        return _count_exact_term(term.term, text.lower())
-    else:
-        return len(re.findall(f"(?={term.term})", text.lower()))
-
-
 def count_query(query, text):
-    return sum([count_term(t, text) for t in query.terms])
+    return sum([t.count_in_text(text) for t in query.terms])
 
 
 def count_search(search, text):

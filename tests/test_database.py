@@ -46,6 +46,19 @@ def test_load_year_xml():
     assert type(year.get("s-party")) == StructuredText
 
 
+def test_structured_text_pages():
+    year = load_year("tests/fixtures/data/1001")
+    text = year.get("s-party")
+    assert len(text.pages) == 4
+
+
+def test_structured_text_paragraphs():
+    year = load_year("tests/fixtures/data/1001")
+    text = year.get("s-party")
+    pages = text.pages
+    assert len(text.pages[0].paragraphs) == 2
+
+
 def test_load_db():
     db = load_db("tests/fixtures/data")
     assert type(db) == Database

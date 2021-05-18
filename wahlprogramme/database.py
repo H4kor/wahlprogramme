@@ -32,6 +32,10 @@ class Page:
     def stats(self):
         return Stats(size=sum(p.stats.size for p in self._paragraphs))
 
+    @property
+    def paragraphs(self):
+        return self._paragraphs
+
 
 class StructuredText:
     def __init__(self, xml_string):
@@ -50,6 +54,10 @@ class StructuredText:
     @property
     def stats(self):
         return Stats(size=sum(p.stats.size for p in self._pages))
+
+    @property
+    def pages(self):
+        return self._pages
 
 
 class Year:
@@ -92,7 +100,6 @@ class Database:
 
 
 def load_text_from_xml(path):
-    print(path)
     with open(path, "r") as f:
         xml = f.read()
         return StructuredText(xml)

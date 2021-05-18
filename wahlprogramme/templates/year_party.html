@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block headline %}{{year}} - {{party_names[party]}}{% endblock %}
+
+{% block content%}
+<div class="column">
+    {% include "search_field.html" %}
+    {% for query, result in results %}
+    <div class="row">
+        <h3>{{query.raw_query}} - {{result|length}} Ergebnisse</h3>
+    </div>
+    {% for page, paragraph in result %}
+    <div class="row">
+        <h4>Seite: {{page+1}}</h4>
+    </div>
+    <div class="row">
+        {{paragraph.text}}
+    </div>
+    <hr>
+    {% endfor %}
+
+    <hr>
+    {% endfor %}
+</div>
+{% endblock %}

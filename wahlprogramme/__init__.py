@@ -15,7 +15,7 @@ DOMAIN = os.environ.get("WAHL_DOMAIN", "https://wahlprogramme.rerere.org")
 
 def create_app(test_config=None):
     # load database
-    db = load_db("data/")
+    db = load_db("data/", txt=False)
 
     party_names = {
         "union": "Union",
@@ -150,4 +150,34 @@ def create_app(test_config=None):
         FigureCanvas(fig).print_png(output)
         return Response(output.getvalue(), mimetype="image/png")
 
+    @app.route("/year/<string:year>/party/<string:party>")
+    def year_party_view(year, party):
+        search = parse_search_queries(request.args)
+
+        results = []
+        for query in search.queries:
+            result = []
+            program = db.get(year).get(party)
+            for i, page in enumerate(program.pages):
+                for paragraph in page.paragraphs:
+                    if query.found_in_text(paragraph.text):
+                        result.append((i, paragraph))
+
+            results.append(result)
+
+        return render_template(
+            "year_party.html",
+            results=list(zip(search.queries, results)),
+            show_relative=False,
+            year=year,
+            party=party,
+            party_names=party_names,
+            query=search.raw_query,
+            relative=search.relative,
+            DOMAIN=DOMAIN,
+        )
+
+    ##
+    # Return app
+    ##
     return app

@@ -1,7 +1,6 @@
 # flake8: noqa: E712
 from wahlprogramme.query import (
     parse_search_queries,
-    count_term,
     count_query,
     count_search,
     Term,
@@ -84,20 +83,6 @@ def test_multi_term_terms():
     assert "baz" in terms
 
 
-def test_count_term():
-    text = """
-    Foo foobar,
-    foofoo barbar
-    foo.
-    """
-    assert count_term(Term(exact=False, term="foo"), text) == 5
-    assert count_term(Term(exact=True, term="foo"), text) == 2
-    assert count_term(Term(exact=False, term="bar"), text) == 3
-    assert count_term(Term(exact=True, term="bar"), text) == 0
-    assert count_term(Term(exact=True, term="barbar"), text) == 1
-    assert count_term(Term(exact=True, term="foobar"), text) == 1
-
-
 def test_count_query():
     text = """
     Foo foobar,
@@ -150,3 +135,55 @@ def test_count_search():
         ),
         text,
     ) == [9, 1]
+
+
+def test_term_found_in_text():
+    text = """
+    Foo foobar,
+    foofoo barbar
+    foo.
+    """
+    assert Term(exact=False, term="foo").found_in_text(text) == True
+    assert Term(exact=False, term="baz").found_in_text(text) == False
+    assert Term(exact=True, term="foobar").found_in_text(text) == True
+    assert Term(exact=True, term="bar").found_in_text(text) == False
+
+
+def test_term_count_in_text():
+    text = """
+    Foo foobar,
+    foofoo barbar
+    foo.
+    """
+    assert Term(exact=False, term="foo").count_in_text(text) == 5
+    assert Term(exact=True, term="foo").count_in_text(text) == 2
+    assert Term(exact=False, term="bar").count_in_text(text) == 3
+    assert Term(exact=True, term="bar").count_in_text(text) == 0
+    assert Term(exact=True, term="barbar").count_in_text(text) == 1
+    assert Term(exact=True, term="foobar").count_in_text(text) == 1
+
+
+def test_query_found_in_text():
+    text = """
+    Foo foobar,
+    foofoo barbar
+    foo.
+    """
+    # Empty -> False
+    assert Query(raw_query="not_part_of_test", terms=[]).found_in_text(text) == False
+    # False, True -> True
+    assert (
+        Query(
+            raw_query="not_part_of_test",
+            terms=[Term(exact=False, term="baz"), Term(exact=False, term="foo")],
+        ).found_in_text(text)
+        == True
+    )
+    # False, False -> False
+    assert (
+        Query(
+            raw_query="not_part_of_test",
+            terms=[Term(exact=False, term="baz"), Term(exact=True, term="bar")],
+        ).found_in_text(text)
+        == False
+    )
