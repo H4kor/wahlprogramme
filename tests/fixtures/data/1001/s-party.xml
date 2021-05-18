@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="date" content="2008-01-22T08:36:00Z" />
+<title>Test Doc</title>
+</head>
+<body>
+<div class="page">
+<p />
+<p> 
+</p>
+</div>
+<div class="page"><p />
+<p>
+    this is a structured document.
+</p>
+</div>
+<div class="page"><p />
+<p>
+    With multiple pages.
+</p>
+</div>
+<div class="page"><p />
+<p>
+    3 actually!
+</p>
+</div>
+</body></html>
