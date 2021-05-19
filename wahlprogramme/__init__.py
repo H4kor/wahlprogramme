@@ -57,12 +57,16 @@ def create_app(test_config=None):
             return "Not Found", 404
 
         search = parse_search_queries(request.args)
-        image_url = f"/party/{party}.png?" + request.query_string.decode("utf-8")
+        query_params = request.query_string.decode("utf-8")
+        image_url = f"/party/{party}.png?" + query_params
+        years = [year for year in db.years if party in db.get(year).parties]
 
         return render_template(
             "party.html",
             image_url=image_url,
             party_names=party_names,
+            query_params=query_params,
+            years=years,
             party=party,
             query=search.raw_query,
             relative=search.relative,
@@ -74,12 +78,18 @@ def create_app(test_config=None):
         if year not in db.years:
             return "Not Found", 404
 
+        parties = db.get(year).parties
+
         search = parse_search_queries(request.args)
-        image_url = f"/year/{year}.png?" + request.query_string.decode("utf-8")
+        query_params = request.query_string.decode("utf-8")
+        image_url = f"/year/{year}.png?" + query_params
 
         return render_template(
             "year.html",
             image_url=image_url,
+            parties=parties,
+            party_names=party_names,
+            query_params=query_params,
             year=year,
             query=search.raw_query,
             relative=search.relative,
@@ -152,6 +162,9 @@ def create_app(test_config=None):
 
     @app.route("/year/<string:year>/party/<string:party>")
     def year_party_view(year, party):
+        if year not in db.years or party not in db.get(year).parties:
+            return "Not Found", 404
+
         search = parse_search_queries(request.args)
 
         results = []

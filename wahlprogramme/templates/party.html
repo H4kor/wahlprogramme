@@ -12,5 +12,15 @@
         <img src="{{image_url}}" alt="">
     </div>
     {% endif %}
+    <h4>Wahlprogramme durchsuchen</h4>
+    <div class="row">
+        {% for year in years%}
+            <div class="column center">
+                <a href="/year/{{year}}/party/{{party}}?{{query_params}}">
+                    {{year}}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
