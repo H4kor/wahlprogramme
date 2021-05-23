@@ -1,21 +1,17 @@
 import io
 import os
-from collections import defaultdict
 from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import seaborn as sns
 from .query import parse_search_queries, count_query
-from .database import load_db
 
 sns.set()
 
 DOMAIN = os.environ.get("WAHL_DOMAIN", "https://wahlprogramme.rerere.org")
 
 
-def create_app(test_config=None):
-    # load database
-    db = load_db("data/", txt=False)
+def create_app(db, test_config=None):
 
     party_names = {
         "union": "Union",
@@ -54,7 +50,7 @@ def create_app(test_config=None):
 
     @app.route("/party/<string:party>")
     def party_view(party):
-        if party not in party_names:
+        if party not in db.parties:
             return "Not Found", 404
 
         search = parse_search_queries(request.args)
@@ -226,7 +222,6 @@ def create_app(test_config=None):
         old_legend = g.legend_
         handles = old_legend.legendHandles
         labels = [t.get_text() for t in old_legend.get_texts()]
-        title = old_legend.get_title().get_text()
         g.legend(handles, labels, loc="center left", bbox_to_anchor=(1, 0.5))
 
         g.set(xlabel="Seite", ylabel="Anzahl")

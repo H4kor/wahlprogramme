@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block headline %}{{year}} - {{party_names[party]}}{% endblock %}
+{% block headline %}{{year}} - {{party_names.get(party, party)}}{% endblock %}
 
 {% block content%}
 <div class="column">

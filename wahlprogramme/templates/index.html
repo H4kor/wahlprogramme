@@ -6,7 +6,7 @@
     <ul>
         {% for party in parties %}
             <li>
-                <a href="/party/{{party}}">{{party_names[party]}}</a>
+                <a href="/party/{{party}}">{{party_names.get(party, party)}}</a>
             </li>
         {% endfor %}
     </ul>

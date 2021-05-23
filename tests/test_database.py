@@ -55,7 +55,6 @@ def test_structured_text_pages():
 def test_structured_text_paragraphs():
     year = load_year("tests/fixtures/data/1001")
     text = year.get("s-party")
-    pages = text.pages
     assert len(text.pages[0].paragraphs) == 2
 
 
