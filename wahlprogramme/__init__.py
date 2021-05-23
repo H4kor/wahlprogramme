@@ -45,6 +45,7 @@ def create_app(test_config=None):
     def index_view():
         return render_template(
             "index.html",
+            show_relative=True,
             parties=db.parties,
             years=db.years,
             party_names=party_names,
@@ -63,6 +64,7 @@ def create_app(test_config=None):
 
         return render_template(
             "party.html",
+            show_relative=True,
             image_url=image_url,
             party_names=party_names,
             query_params=query_params,
@@ -86,6 +88,7 @@ def create_app(test_config=None):
 
         return render_template(
             "year.html",
+            show_relative=True,
             image_url=image_url,
             parties=parties,
             party_names=party_names,
@@ -166,6 +169,8 @@ def create_app(test_config=None):
             return "Not Found", 404
 
         search = parse_search_queries(request.args)
+        query_params = request.query_string.decode("utf-8")
+        image_url = f"/year/{year}/party/{party}.png?" + query_params
 
         results = []
         for query in search.queries:
@@ -181,6 +186,7 @@ def create_app(test_config=None):
         return render_template(
             "year_party.html",
             results=list(zip(search.queries, results)),
+            image_url=image_url,
             show_relative=False,
             year=year,
             party=party,
@@ -189,6 +195,46 @@ def create_app(test_config=None):
             relative=search.relative,
             DOMAIN=DOMAIN,
         )
+
+    @app.route("/year/<string:year>/party/<string:party>.png")
+    def year_party_png(year, party):
+        if year not in db.years or party not in db.get(year).parties:
+            return "Not Found", 404
+
+        search = parse_search_queries(request.args)
+
+        data = {"x": [], "y": [], "hue": []}
+        text = db.get(year).get(party)
+        for query in search.queries:
+            for i, page in enumerate(text.pages):
+                count = count_query(query, page.text)
+
+                # data["y"].append(count)
+                for _ in range(count):
+                    data["hue"].append(query.raw_query)
+                    data["x"].append(i + 1)
+
+        fig = Figure(figsize=(12, 3))
+        fig.suptitle(f"Wahlprogramme {party_names[party]} {year}")
+        axis = fig.add_subplot(1, 1, 1)
+        g = sns.histplot(
+            data=data, x="x", bins=range(len(text.pages)), hue="hue", ax=axis
+        )
+
+        # https://github.com/mwaskom/seaborn/issues/2280#issuecomment-692350136
+        # moving histplot legends is more complicated
+        old_legend = g.legend_
+        handles = old_legend.legendHandles
+        labels = [t.get_text() for t in old_legend.get_texts()]
+        title = old_legend.get_title().get_text()
+        g.legend(handles, labels, loc="center left", bbox_to_anchor=(1, 0.5))
+
+        g.set(xlabel="Seite", ylabel="Anzahl")
+        # g.set(xticks=range(1, len(text.pages) + 1)[2::8])
+        fig.tight_layout()
+        output = io.BytesIO()
+        FigureCanvas(fig).print_png(output)
+        return Response(output.getvalue(), mimetype="image/png")
 
     ##
     # Return app
