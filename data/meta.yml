@@ -1,0 +1,25 @@
+parties:
+  union:
+    name: "Union"
+    color: "#222222"
+  fdp:
+    name: "FDP"
+    color: "#fbee31"
+  freiewähler:
+    name: "Freie Wähler"
+    color: "#f59900"
+  spd:
+    name: "SPD"
+    color: "#e2001a"
+  afd:
+    name: "AfD"
+    color: "#009ee0"
+  grüne:
+    name: "Die Grünen"
+    color: "#46962b"
+  linke:
+    name: "Die Linke"
+    color: "#d00060"
+  piraten:
+    name: "Piraten"
+    color: "#FF820A"

@@ -82,3 +82,28 @@ def test_database_parties():
     db = load_db("tests/fixtures/data")
     assert "a_party" in db.parties
     assert "b.party" in db.parties
+
+
+def test_database_meta_data():
+    db = load_db("tests/fixtures/data")
+    assert "a_party" in db.meta.parties
+    assert db.meta.parties["a_party"].color == "#ff0000"
+    assert db.meta.parties["a_party"].name == "A Party"
+
+
+def test_database_party_colors():
+    db = load_db("tests/fixtures/data")
+    assert db.party_colors == {
+        "a_party": "#ff0000",
+        "b.party": "#00ff00",
+        "s-party": "#000000",
+    }
+
+
+def test_database_party_names():
+    db = load_db("tests/fixtures/data")
+    assert db.party_names == {
+        "a_party": "A Party",
+        "b.party": "B Party",
+        "s-party": "Structured Party",
+    }

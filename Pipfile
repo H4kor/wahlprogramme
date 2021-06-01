@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 Flask = ">=2.0.0"
 seaborn = ">=0.11.1"
+PyYAML = "==5.4.1"
 wahlprogramme = {editable = true, path = "."}
 tika = "*"
 

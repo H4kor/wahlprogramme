@@ -1,0 +1,10 @@
+parties:
+  a_party:
+    name: "A Party"
+    color: "#ff0000"
+  b.party:
+    name: "B Party"
+    color: "#00ff00"
+  s-party:
+    name: "Structured Party"
+    color: "#000000"

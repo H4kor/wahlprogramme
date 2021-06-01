@@ -13,28 +13,6 @@ DOMAIN = os.environ.get("WAHL_DOMAIN", "https://wahlprogramme.rerere.org")
 
 def create_app(db, test_config=None):
 
-    party_names = {
-        "union": "Union",
-        "fdp": "FDP",
-        "freiewähler": "Freie Wähler",
-        "spd": "SPD",
-        "afd": "AfD",
-        "grüne": "Die Grünen",
-        "linke": "Die Linke",
-        "piraten": "Piraten",
-    }
-
-    party_colors = {
-        "union": "#222222",
-        "fdp": "#fbee31",
-        "freiewähler": "#f59900",
-        "spd": "#e2001a",
-        "afd": "#009ee0",
-        "grüne": "#46962b",
-        "linke": "#d00060",
-        "piraten": "#FF820A",
-    }
-
     app = Flask(__name__)
 
     @app.route("/")
@@ -44,7 +22,7 @@ def create_app(db, test_config=None):
             show_relative=True,
             parties=db.parties,
             years=db.years,
-            party_names=party_names,
+            party_names=db.party_names,
             DOMAIN=DOMAIN,
         )
 
@@ -62,7 +40,7 @@ def create_app(db, test_config=None):
             "party.html",
             show_relative=True,
             image_url=image_url,
-            party_names=party_names,
+            party_names=db.party_names,
             query_params=query_params,
             years=years,
             party=party,
@@ -87,7 +65,7 @@ def create_app(db, test_config=None):
             show_relative=True,
             image_url=image_url,
             parties=parties,
-            party_names=party_names,
+            party_names=db.party_names,
             query_params=query_params,
             year=year,
             query=search.raw_query,
@@ -110,7 +88,7 @@ def create_app(db, test_config=None):
 
                 data["x"].append(query.raw_query)
                 data["y"].append(count)
-                data["hue"].append(party_names[party])
+                data["hue"].append(db.party_names[party])
 
         fig = Figure(figsize=(12, 6))
         fig.suptitle(f"Wahlprogramme {year}")
@@ -120,8 +98,8 @@ def create_app(db, test_config=None):
             x="x",
             y="y",
             hue="hue",
-            hue_order=[party_names[p] for p in db.get(year).parties],
-            palette=[party_colors[p] for p in db.get(year).parties],
+            hue_order=[db.party_names[p] for p in db.get(year).parties],
+            palette=[db.party_colors[p] for p in db.get(year).parties],
             ax=axis,
         )
         # place the legend outside the figure/plot
@@ -133,7 +111,7 @@ def create_app(db, test_config=None):
 
     @app.route("/party/<string:party>.png")
     def party_png(party):
-        if party not in party_names:
+        if party not in db.party_names:
             return "Not Found", 404
         search = parse_search_queries(request.args)
 
@@ -150,7 +128,7 @@ def create_app(db, test_config=None):
                     data["x"].append(year)
 
         fig = Figure(figsize=(12, 6))
-        fig.suptitle(f"Wahlprogramme {party_names[party]}")
+        fig.suptitle(f"Wahlprogramme {db.party_names[party]}")
         axis = fig.add_subplot(1, 1, 1)
         g = sns.barplot(data=data, x="x", y="y", hue="hue", ax=axis)
         g.legend(loc="center left", bbox_to_anchor=(1, 0.5))
@@ -186,7 +164,7 @@ def create_app(db, test_config=None):
             show_relative=False,
             year=year,
             party=party,
-            party_names=party_names,
+            party_names=db.party_names,
             query=search.raw_query,
             relative=search.relative,
             DOMAIN=DOMAIN,
@@ -211,7 +189,7 @@ def create_app(db, test_config=None):
                     data["x"].append(i + 1)
 
         fig = Figure(figsize=(12, 3))
-        fig.suptitle(f"Wahlprogramme {party_names[party]} {year}")
+        fig.suptitle(f"Wahlprogramme {db.party_names[party]} {year}")
         axis = fig.add_subplot(1, 1, 1)
         g = sns.histplot(
             data=data, x="x", bins=range(len(text.pages)), hue="hue", ax=axis

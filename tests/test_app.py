@@ -18,15 +18,15 @@ def test_home_view(client):
     assert b"<h2>Jahre</h2>" in rv.data
     assert b'<a href="/year/1000">1000</a>' in rv.data
     assert b'<a href="/year/1001">1001</a>' in rv.data
-    assert b'<a href="/party/a_party">a_party</a>' in rv.data
-    assert b'<a href="/party/b.party">b.party</a>' in rv.data
-    assert b'<a href="/party/s-party">s-party</a>' in rv.data
+    assert b'<a href="/party/a_party">A Party</a>' in rv.data
+    assert b'<a href="/party/b.party">B Party</a>' in rv.data
+    assert b'<a href="/party/s-party">Structured Party</a>' in rv.data
 
 
 def test_party_view(client):
     rv = client.get("/party/a_party")
     assert rv.status_code == 200
-    assert b'<h2 class="headline">a_party</h2>' in rv.data
+    assert b'<h2 class="headline">A Party</h2>' in rv.data
     assert b'<a href="/year/1000/party/a_party?">' in rv.data
     assert b'<label class="label-inline" for="relative">Relativ</label>' in rv.data
     assert (
@@ -54,7 +54,7 @@ def test_year_view(client):
 def test_year_party_view(client):
     rv = client.get("/year/1000/party/a_party")
     assert rv.status_code == 200
-    assert b'<h2 class="headline">1000 - a_party</h2>' in rv.data
+    assert b'<h2 class="headline">1000 - A Party</h2>' in rv.data
     assert b'<label class="label-inline" for="relative">Relativ</label>' not in rv.data
     assert (
         '<input id="query" type="text" name="query" value="" placeholder="Mehrere Begriffe können durch Kommas getrennt werden">'.encode(

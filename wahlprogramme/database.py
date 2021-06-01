@@ -1,10 +1,17 @@
 import os
 from collections import namedtuple
 import xml.etree.ElementTree as ET
+import yaml
 
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
 
 Stats = namedtuple("Stats", ["size"])
 Text = namedtuple("Text", ["text", "stats"])
+Meta = namedtuple("Meta", ["parties"])
+MetaParty = namedtuple("MetaParty", ["name", "color"])
 
 
 class Paragraph:
@@ -80,6 +87,7 @@ class Database:
     def __init__(self):
         super().__init__()
         self._years = {}
+        self._meta = None
 
     def set(self, name, year):
         self._years[name] = year
@@ -97,6 +105,21 @@ class Database:
         for year in self._years.values():
             parties |= year.parties
         return parties
+
+    @property
+    def meta(self):
+        return self._meta
+
+    @property
+    def party_colors(self):
+        return {party: data.color for party, data in self._meta.parties.items()}
+
+    @property
+    def party_names(self):
+        return {party: data.name for party, data in self._meta.parties.items()}
+
+    def set_meta(self, data):
+        self._meta = data
 
 
 def load_text_from_xml(path):
@@ -127,8 +150,25 @@ def load_year(path, txt=True):
     return year
 
 
+def load_metadata(path):
+    yaml_data = yaml.load(open(path, "r"), Loader=Loader)
+    return Meta(
+        parties={
+            k: MetaParty(name=v["name"], color=v["color"])
+            for k, v in yaml_data["parties"].items()
+        }
+    )
+
+
 def load_db(path, txt=True):
     db = Database()
+    meta_path = os.path.join(path, "meta.yml")
+
+    # load meta data
+    if os.path.isfile(meta_path):
+        db.set_meta(load_metadata(meta_path))
+
+    # load data
     for year in os.listdir(path):
         year_path = os.path.join(path, year)
         if os.path.isdir(year_path):
