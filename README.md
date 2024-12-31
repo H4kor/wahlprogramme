@@ -10,6 +10,7 @@
 
 ## Daten Extraktion
 
+* `pip install tika` tika installieren
 * `python extract.py` transformiert alle PDFs in den Ordnern `2017` und `2021` in .txt Dateien
 
 ## Development Setup
@@ -52,3 +53,8 @@ pytest
 * [Die Linke](https://www.die-linke.de/fileadmin/download/wahlen2021/BTWP21_Entwurf_Vorsitzende.pdf)
 * [FDP](https://www.fdp.de/content/entwurf-fdp-bundestagswahlprogramm-2021)
 * AfD noch nicht veröffentlicht.
+
+
+### 2025
+
+* https://www.bundestagswahl-bw.de/wahlprogramm-bsw

@@ -23,3 +23,6 @@ parties:
   piraten:
     name: "Piraten"
     color: "#FF820A"
+  bsw:
+    name: "BSW"
+    color: "#8000ff"

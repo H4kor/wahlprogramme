@@ -102,6 +102,8 @@ def create_app(db, test_config=None):
             palette=[db.party_colors[p] for p in db.get(year).parties],
             ax=axis,
         )
+        axis.set_xlabel("")
+        axis.set_ylabel("Treffer")
         # place the legend outside the figure/plot
         g.legend(loc="center left", bbox_to_anchor=(1, 0.5))
         fig.tight_layout()
@@ -192,15 +194,12 @@ def create_app(db, test_config=None):
         fig.suptitle(f"Wahlprogramme {db.party_names[party]} {year}")
         axis = fig.add_subplot(1, 1, 1)
         g = sns.histplot(
-            data=data, x="x", bins=range(len(text.pages)), hue="hue", ax=axis
+            data=data, x="x", bins=range(len(text.pages)), hue="hue", ax=axis,
         )
 
-        # https://github.com/mwaskom/seaborn/issues/2280#issuecomment-692350136
-        # moving histplot legends is more complicated
-        old_legend = g.legend_
-        handles = old_legend.legendHandles
-        labels = [t.get_text() for t in old_legend.get_texts()]
-        g.legend(handles, labels, loc="center left", bbox_to_anchor=(1, 0.5))
+        sns.move_legend(
+            axis, "center left", bbox_to_anchor=(1, 0.5)
+        )
 
         g.set(xlabel="Seite", ylabel="Anzahl")
         # g.set(xticks=range(1, len(text.pages) + 1)[2::8])
