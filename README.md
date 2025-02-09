@@ -57,10 +57,10 @@ pytest
 
 ### 2025
 
-* [SPD](https://www.bundestagswahl-bw.de/fileadmin/bundestagswahl-bw/2025/Wahlprogramme/BTW_2025_Wahlprogramm_SPD_Entwurf.pdf) (Entwurf)
+* [SPD](https://www.bundestagswahl-bw.de/fileadmin/bundestagswahl-bw/2025//BTW_2025_Wahlprogramm_SPD_Entwurf.pdf)
 * [Union](https://www.bundestagswahl-bw.de/fileadmin/bundestagswahl-bw/2025/Parteien_und_Spitzenkandidierende/btw_2025_wahlprogramm-cdu-csu.pdf)
-* [Grüne](https://www.bundestagswahl-bw.de/fileadmin/bundestagswahl-bw/2025/Wahlprogramme/BTW_2025_Wahlprogramm_Gr%C3%BCne_Entwurf.pdf) (Entwurf)
-* [FDP](https://www.bundestagswahl-bw.de/fileadmin/bundestagswahl-bw/2025/Wahlprogramme/BTW_2025_Wahlprogramm_FDP_Entwurf.pdf) (Entwurf)
-* [Die Linke](https://www.bundestagswahl-bw.de/fileadmin/bundestagswahl-bw/2025/Parteien_und_Spitzenkandidierende/btw_2025_wahlprogramm_die_linke.pdf) (Entwurf)
-* [AfD](https://www.bundestagswahl-bw.de/fileadmin/bundestagswahl-bw/2025/Wahlprogramme/AfD_Leitantrag-Bundestagswahlprogramm-2025.pdf) (Entwurf)
-* [BSW](https://www.bundestagswahl-bw.de/fileadmin/bundestagswahl-bw/2025/Wahlprogramme/BTW_2025_BSW_Kurzwahlprogramm.pdf) (Entwurf)
+* [Grüne](https://cms.gruene.de/uploads/assets/20250205_Regierungsprogramm_DIGITAL_DINA5.pdf)
+* [FDP](https://www.fdp.de/sites/default/files/2024-12/fdp-wahlprogramm_2025.pdf)
+* [Die Linke](https://www.die-linke.de/fileadmin/user_upload/Wahlprogramm_Langfassung_Linke-BTW25_01.pdf)
+* [AfD](https://www.afd.de/wp-content/uploads/2025/02/AfD_Bundestagswahlprogramm2025_web.pdf)
+* [BSW](https://bsw-vg.de/wp-content/themes/bsw/assets/downloads/BSW%20Wahlprogramm%202025.pdf)
